@@ -1,0 +1,54 @@
+BLACKJACK
+
+Objective: Obtain a higher value hand than the dealer without going over 21.
+
+Individual card values are as follows:
+Ace: 1 or 11, whichever is higher without going over 21.
+King, Queen, and Jack: 10.
+Number Cards: Number shown on the card.
+
+The player and dealer are each dealt two cards.
+The first dealer card is face down.
+"Blackjack" occurs when either the player hand value or the dealer hand value is 21 on the initial deal.
+Player "Blackjack" pays 3 to 2, and the round ends.
+Otherwise, the player bet is forfeited and the round ends on dealer "Blackjack".
+The player then begins their turn and may perform the following actions:
+
+Hit:
+- Draw one additional card to add to the hand.
+- If the hand value goes over 21, the player BUSTS and the hand bet is forfeited.
+
+Stand:
+- End adding cards to the hand.
+- Stand occurs automatically when player hand value is 21.
+
+Double Down:
+- If on the initial two cards, the player hand value is 9, 10, or 11 and the dealer does not have Blackjack, the player may place an additional bet equal to the initial bet to double down.
+- One more card is drawn and added to the player's hand, then that hand immediately stands.
+
+Split:
+- If on the initial deal, the player's two cards are of equal rank and the dealer does not have Blackjack, the player may place an additional bet equal to the inital bet to split the hand.
+- Each card is placed into a separate hand and dealt one additional card.
+- If the additional card is of equal rank to the split card in a hand, the player may split that hand again.
+- Player can split up to three times per round (max of four hands).
+- Split Aces receive only one additional card, and automatically stand if not split.
+- Otherwise, the player plays each hand individually against the dealer hand.
+
+Insurance:
+- If on the initial deal, the dealer's face up card is an Ace, the player may place an insurance bet equal to 1/2 of the initial bet rounded down.
+- Insurance bet is not available when player bet is 1.
+- If the face down card value is 10, the dealer has blackjack. The insurance bet pays 2 to 1, and the round ends (PUSH on player Blackjack, otherwise LOSE original bet).
+- If the dealer does not have blackjack, the insurance bet is forfeited and the round continues.
+
+After the player turn, if the player has any qualifying hands (not BUSTed), the dealer begins their turn. The dealer's face down card is revealed. Then the dealer plays according to the following rules:
+- Dealer hits on any value of 16 or lower, or on a soft 17.
+- Dealer stands on a hard 17, or any value of 18 or higher.
+- If the dealer hand value goes over 21, the dealer BUSTS and the player wins on all qualifying hands.
+- Otherwise, the player hands and dealer hand are compared.
+- Player WINS on all qualifying hands with a value greater than the dealer hand.
+- Player LOSES on all qualifying hands with a value less than the dealer hand.
+- Player PUSHES on all qualifying hands with a value equal to the dealer hand.
+
+WIN pays 1 to 1 on the hand bet.
+LOSE forfeits the hand bet.
+PUSH returns the hand bet.
