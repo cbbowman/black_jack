@@ -1,0 +1,141 @@
+#bod {
+    display: flex;
+    margin: 0 auto;
+    min-width: 100vh;
+    min-height: 100vh;
+    flex-flow: column;
+    vertical-align: auto;
+    justify-items: center;
+}
+#nav {
+    padding-top: 10px;
+    padding-bottom: 15px;
+    border-bottom: 8px solid black;
+}
+#main {
+    margin: 0 auto;
+    min-height: 90%;
+    min-width: 100%;
+    padding-top: 90px;
+    background-color: green;
+}
+#content {
+    min-height: 90vh;
+    min-width: 100vh;
+    border: 5px solid black;
+}
+#messages {
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+    outline: 5px solid red;
+}
+ul {
+    padding-top: 7.5px;
+}
+h1, h2 {
+    text-align: center;
+    vertical-align: center;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+h1 {
+    color: rgb(1, 70, 14);
+    font-size: 5em;
+    text-decoration-color: black;
+    text-decoration-thickness: 7px;
+}
+.h2 {
+    font-weight: 800;
+    padding-bottom: 5px;
+    text-decoration-color: red;
+    text-decoration-thickness: 3px;
+}
+.h3 {
+    font-weight: 800;
+}
+form {
+    width: 100%;
+    padding: 1em;
+    display: block;
+    margin: 0 auto;
+    font-size: 1.25em;
+    text-align: center;
+    border: 5px solid black;
+    justify-content: space-evenly;
+}
+table {
+    width: 90%;
+    padding: 20px;
+    margin: 0 auto;
+    font-size: 1.5em;
+    text-align: center;
+    align-items: center;
+    justify-content: space-evenly;
+}
+tbody {
+    color: white;
+}
+.register {
+    width: 95%;
+    margin: 0 auto;
+}
+.login{
+    width: 75%;
+    margin: 0 auto;
+}
+.btn {
+    margin: 0 auto;
+}
+#test2 {
+    max-height: 100%;
+}
+#boards {
+    padding: 25px;
+    margin: 20px 5px;
+    min-height: 90vh;
+    font-weight: 700;
+    text-align: center;
+    border: 7.5px solid crimson;
+    outline: 7.5px solid black;
+    justify-content: space-around;
+    background-color: rgba(27, 23, 250, 0.486);
+}
+#banner {
+    display: flex;
+    padding: 15px;
+    margin: 20px 5px;
+    min-height: 15vh;
+    font-weight: 700;
+    flex-flow: column;
+    text-align: center;
+    border: 7.5px solid crimson;
+    outline: 7.5px solid black;
+    justify-content: space-around;
+    background-color: rgba(27, 23, 250, 0.486);
+}
+#bar {
+    width:25%;
+    height:90%;
+    display: inline-block;
+    color: rgb(255, 0, 0);
+}
+#game {
+    display: flex;
+    padding: 7.5px;
+    margin: 35px 5px;
+    min-height: 73vh;
+    font-weight: 700;
+    flex-flow: column;
+    text-align: center;
+    outline: 7.5px solid black;
+    justify-content: space-evenly;
+    background-color: gray;
+    vertical-align: middle;
+    align-self: center;
+}
+#button1, #button2 {
+    width:75%;
+    margin:0 auto;
+    padding:5px;
+}

@@ -1,0 +1,23 @@
+{% extends "base_site.html" %}
+
+{% block title %} Blackjack! {% endblock title %}
+
+{% block stylesheets %}
+    {{ block.super }}
+{% endblock stylesheets %}
+
+{% block navbar %}
+    <nav class="navbar fixed-top bg-danger justify-content-between" id="nav2" role="group">
+        <a href="" class="navbar-brand"><h1 class="h1">Hey, {{ request.session.first_name }}!</h1></a> 
+        <div class="btn-group inline" role="group">
+            <a href="/logout" class="btn btn-warning">Logout</a> 
+        </div>
+    </nav>
+    <nav class="navbar fixed-top navbar-dark bg-dark justify-content-between" id="nav2" role="group">
+        <a href="" class="navbar-brand"><h1 class="h1">Welcome, {{ request.session.first_name }}!</h1></a> 
+        <div class="btn-group inline" role="group">
+            <a href="/dashboard/quotes/{{ logged_user.id }}" class="btn btn-primary">My Posts</a>
+            <a href="/logout" class="btn btn-danger">Logout</a> 
+        </div>
+    </nav>
+{% endblock navbar %}
