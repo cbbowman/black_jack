@@ -1,12 +1,18 @@
 {% extends "base_site.html" %}
 
-{% block title %} Blackjack! {% endblock title %}
+{% block title %} Let's Play Some Blackjack! {% endblock title %}
 
 {% block stylesheets %}
     {{ block.super }}
 {% endblock stylesheets %}
 
-{% block navbar %}
+{% block banner %}
+    {% include "roi.html" %}
+{% endblock banner %}
+
+{% block body %}
+    {% block content %}
+{% comment %} {% block navbar %}
     <nav class="navbar fixed-top bg-danger justify-content-between" id="nav2" role="group">
         <a href="" class="navbar-brand"><h1 class="h1">Hey, {{ request.session.first_name }}!</h1></a> 
         <div class="btn-group inline" role="group">
@@ -20,4 +26,11 @@
             <a href="/logout" class="btn btn-danger">Logout</a> 
         </div>
     </nav>
-{% endblock navbar %}
+{% endblock navbar %} {% endcomment %}
+
+    {% endblock content %}
+{% endblock body %}
+
+{% block javascripts %}
+    {{ block.super }}
+{% endblock javascripts %}
