@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'black_jack',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
