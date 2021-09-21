@@ -48,21 +48,23 @@ if settings.DEBUG:
         return render(request, "test_page.html")
 
     def test_display(request):
+        print("in test_display")
         context = {}
         if 'game_data' in request.session:
             game_data = request.session['game_data']
-            context['dealer_hand'] = game_data['table'].dealer
+            game_table = Blackjack().from_json(game_data['table'])
+            context['dealer_hand'] = game_table.dealer
             context['active_hand'] = game_data['active_hand']
             context['player_hands'] = []
             context['player_bets'] = {}
             context['player_bets']['main'] = []
             context['player_status'] = []
-            for i in game_data['table'].player:
-                context['player_hands'].append(game_data['table'].player[i]['hand'])
-                context['player_bets']['main'].append(game_data['table'].player[i]['bet'])
-                context['player_status'].append(game_data['table'].player[i]['status'])
-            if game_data['table'].state == "end":
-                context['wins'] = game_data['table'].wins
+            for spot in game_table.player:
+                context['player_hands'].append(spot['hand'])
+                context['player_bets']['main'].append(spot['bet'])
+                context['player_status'].append(spot['status'])
+            if game_table.state == "end":
+                context['wins'] = game_table.wins
             context['actions_available'] = game_data['actions_available']
         else:
             context['no_game_data'] = True
@@ -73,11 +75,12 @@ if settings.DEBUG:
     # Reset after the game ends, go to fresh table.
     def test_reset(request):
         if request.method == "POST":
-            request.session.pop('game_data')
+            if 'game_data' in request.session:
+                request.session.pop('game_data')
         return redirect('/test/display/')
         
     # test_new_game
-    # Path: '/test/new/'
+    # Path: '/test/new_game/'
     # Start new blackjack game.
     def test_new_game(request):
         if request.method == "POST":
@@ -88,23 +91,23 @@ if settings.DEBUG:
 
             # Set Game Data.
             game_data = {}
-            game_data['table'] = Blackjack()
-            game_data['table'].new_game(main_bet)
+            game_table = Blackjack()
+            game_table.new_game(main_bet)
 
             game_data['active_hand'] = 1
             game_data['actions_available'] = []
             # Set options.
-            if game_data['table'].state == 'insurance':
+            if game_table.state == 'insurance':
                 game_data['active_hand'] = 0
                 if (main_bet > 1): # and player has credits available.
                     game_data['actions_available'].extend(["insurance_yes", "insurance_no"])
                 else:
-                    game_data['table'].blackjack_check()
+                    game_table.blackjack_check()
 
             # Save to session data.
+            game_data['table'] = game_table.to_json()
             request.session['game_data'] = game_data
-        
-            return test_setup_game(request)
+            test_setup_game(request)
     
         return redirect('/test/display/')
 
@@ -114,26 +117,28 @@ if settings.DEBUG:
     def test_hit(request):
         if request.method == "POST":
             game_data = request.session['game_data']
+            game_table = Blackjack().from_json(game_data['table'])
 
             # Do the hit.
-            game_data['table'].hit(game_data['active_hand'])
+            game_table.hit(game_data['active_hand'])
 
             # Determine next actions.
-            if game_data['table'].player[game_data['active_hand']]['status'] == "active":
-                game_data['actions_available'] = player_turn_actions(game_data['table'], game_data['active_hand'])
+            if game_table.player[game_data['active_hand']]['status'] == "active":
+                game_data['actions_available'] = player_turn_actions(game_table, game_data['active_hand'])
             else: # active hand stand or bust
                 # Traverse to the next active hand.
-                while (game_data['table'].player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_data['table'].player)):
+                while (game_table.player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_table.player)):
                     game_data['active_hand'] += 1
                 # Determine next available actions.
                 game_data['active_hand'] += 1
-                if game_data['active_hand'] == len(game_data['table'].player): # Played through all player hands.
+                if game_data['active_hand'] == len(game_table.player): # Played through all player hands.
                     game_data['actions_available'] = []
-                    game_data['table'].status = "dealer_turn"
+                    game_table.status = "dealer_turn"
                 else:
-                    game_data['actions_available'] = player_turn_actions(game_data['table'], game_data['active_hand'])
+                    game_data['actions_available'] = player_turn_actions(game_table, game_data['active_hand'])
 
             # Save to session data.
+            game_data['table'] = game_table.to_json()
             request.session['game_data'] = game_data
 
         return redirect('/test/display/')
@@ -144,20 +149,22 @@ if settings.DEBUG:
     def test_stand(request):
         if request.method == "POST":
             game_data = request.session['game_data']
+            game_table = Blackjack().from_json(game_data['table'])
 
-            game_data['table'].stand(game_data['active_hand'])
+            game_table.stand(game_data['active_hand'])
 
             # Traverse to the next active hand.
-            while (game_data['table'].player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_data['table'].player)):
+            while (game_table.player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_table.player)):
                 game_data['active_hand'] += 1
             # Determine next available actions.
-            if game_data['active_hand'] == len(game_data['table'].player): # Played through all player hands.
+            if game_data['active_hand'] == len(game_table.player): # Played through all player hands.
                 game_data['actions_available'] = []
-                game_data['table'].status = "dealer_turn"
+                game_table.status = "dealer_turn"
             else:
-                game_data['actions_available'] = player_turn_actions(game_data['table'], game_data['active_hand'])
+                game_data['actions_available'] = player_turn_actions(game_table, game_data['active_hand'])
 
             # Save to session data.
+            game_data['table'] = game_table.to_json()
             request.session['game_data'] = game_data
 
         return redirect('/test/display/')
@@ -168,17 +175,22 @@ if settings.DEBUG:
     def test_double_down(request):
         if request.method == "POST":
             game_data = request.session['game_data']
+            game_table = Blackjack().from_json(game_data['table'])
 
             # Deduct from player credit meter here.
 
-            game_data['table'].double_down(game_data['active_hand'])
+            game_table.double_down(game_data['active_hand'])
 
             game_data['active_hand'] += 1
-            if game_data['active_hand'] == len(game_data['table'].player): # Played through all player hands.
+            if game_data['active_hand'] == len(game_table.player): # Played through all player hands.
                 game_data['actions_available'] = []
-                game_data['table'].status = "dealer_turn"
+                game_table.status = "dealer_turn"
             else:
-                game_data['actions_available'] = player_turn_actions(game_data['table'], game_data['active_hand'])
+                game_data['actions_available'] = player_turn_actions(game_table, game_data['active_hand'])
+
+            # Save to session data.
+            game_data['table'] = game_table.to_json()
+            request.session['game_data'] = game_data
 
         return redirect('/test/display/')
 
@@ -188,27 +200,29 @@ if settings.DEBUG:
     def test_split(request):
         if request.method == "POST":
             game_data = request.session['game_data']
+            game_table = Blackjack().from_json(game_data['table'])
 
             # Deduct from player credit meter here.
 
-            game_data['table'].player.split(game_data['active_hand'])
+            game_table.player.split(game_data['active_hand'])
 
             # Stand on all split aces. A split ace that gets another ace can be split again.
-            for i in range(game_data['active_hand'], len(game_data['table'].player)):
-                if (game_data['table'].player[i]['hand'].cards[0].rank == "Ace") and (game_data['table'].player[i]['hand'].cards[1].rank != "Ace"):
-                    game_data['table'].player[i]['status'] = "stand"
+            for i in range(game_data['active_hand'], len(game_table.player)):
+                if (game_table.player[i]['hand'].cards[0].rank == "Ace") and (game_table.player[i]['hand'].cards[1].rank != "Ace"):
+                    game_table.player[i]['status'] = "stand"
 
             # Traverse to the next active hand.
-            while (game_data['table'].player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_data['table'].player)):
+            while (game_table.player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_table.player)):
                 game_data['active_hand'] += 1
             # Determine next available actions.
-            if game_data['active_hand'] == len(game_data['table'].player): # Played through all player hands.
+            if game_data['active_hand'] == len(game_table.player): # Played through all player hands.
                 game_data['actions_available'] = []
-                game_data['table'].status = "dealer_turn"
+                game_table.status = "dealer_turn"
             else:
-                game_data['actions_available'] = player_turn_actions(game_data['table'], game_data['active_hand'])
+                game_data['actions_available'] = player_turn_actions(game_table, game_data['active_hand'])
 
             # Save to session data.
+            game_data['table'] = game_table.to_json()
             request.session['game_data'] = game_data
 
         return redirect('/test/display/')
@@ -219,12 +233,14 @@ if settings.DEBUG:
     def test_take_insurance(request):
         if request.method == "POST":
             game_data = request.session['game_data']
+            game_table = Blackjack().from_json(game_data['table'])
 
             # Deduct from player credit meter here.
 
-            game_data['table'].take_insurance()
+            game_table.take_insurance()
 
             # Save to session data.
+            game_data['table'] = game_table.to_json()
             request.session['game_data'] = game_data
 
             return test_setup_game(request)
@@ -235,23 +251,27 @@ if settings.DEBUG:
     # Path: /test/setup_game/
     # Set up for the first turn.
     def test_setup_game(request):
+        print("In test_setup_game begin")
         if request.method == "POST":
             game_data = request.session['game_data']
+            game_table = Blackjack().from_json(game_data['table'])
 
-            game_data['table'].blackjack_check()
+            game_table.blackjack_check()
 
-            if game_data['table'].state == 'player_turn':
+            if game_table.state == 'player_turn':
                 game_data['active_hand'] = 0
-                game_data['actions_available'] = player_turn_actions(round, 0)
+                game_data['actions_available'] = player_turn_actions(game_data['table'], 0)
 
-            if game_data['table'].state == 'dealer_turn': # Dealer blackjack, game effectively over.
-                round.dealer_reveal()
-                round.dealer_draw()
+            if game_table.state == 'dealer_turn': # Dealer blackjack, game effectively over.
+                game_table.dealer_reveal()
+                game_table.dealer_draw()
 
-            if game_data['table'].state == 'end': # Will get here after dealer blackjack or player blackjack.
-                round.evaluate()
+            if game_table.state == 'end': # Will get here after dealer blackjack or player blackjack.
+                game_table.evaluate()
 
             # Save to session data.
+            game_data['table'] = game_table.to_json()
             request.session['game_data'] = game_data
 
+        print("In test_setup_game end")
         return redirect('/test/display/')

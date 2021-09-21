@@ -59,6 +59,16 @@ class Shoe:
                 for rank in RANKS:
                     self.draw_stack.append(Card(rank, suit))
 
+    def rebuild(self, shoe_dict):
+        self.draw_stack = []
+        self.discard_stack = []
+        for c in shoe_dict['draw_stack']:
+            self.draw_stack.append(Card(c['rank'], c['suit']))
+        for c in shoe_dict['discard_stack']:
+            self.discard_stack.append(Card(c['rank'], c['suit']))
+
+        return self
+
     def shuffle(self):
         self.draw_stack.extend(self.discard_stack)
         self.discard_stack.clear()
@@ -118,6 +128,15 @@ class Hand:
     @property
     def final_value(self):
         return self.soft_value if self.soft_value <= 21 else self.hard_value
+
+    def rebuild(self, hand_dict):
+        self.cards = []
+        for c in hand_dict['cards']:
+            self.cards.append(Card(c['rank'], c['suit']))
+        self.facedown_card = hand_dict['facedown_card']
+        self.dealer = hand_dict['dealer']
+
+        return self
 
     def print_value(self):
         if (self.hard_value != self.soft_value) and (self.soft_value < 21):

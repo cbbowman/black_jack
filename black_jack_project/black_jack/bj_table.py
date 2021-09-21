@@ -1,5 +1,5 @@
 from .bj_objects import Shoe, Hand
-import math
+import math, json
 
 # Objects on table:
 # Card Shoe - Shoe Object
@@ -30,6 +30,30 @@ class Blackjack:
         self.side_bets = side_bets
         self.wins = wins
         self.state = state
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
+
+    def from_json(self, json_str):
+        build_dict = json.loads(json_str)
+        # Shoe
+        self.shoe = Shoe().rebuild(build_dict['shoe'])
+        # Dealer
+        self.dealer = Hand().rebuild(build_dict['dealer'])
+        # Player
+        self.player = []
+        for player_hand in build_dict['player']:
+            self.player.append({
+                'bet'    : player_hand['bet'],
+                'hand'   : Hand().rebuild(player_hand['hand']),
+                'status' : player_hand['status'],
+            })
+        # The Rest
+        self.side_bets = build_dict['side_bets']
+        self.wins = build_dict['wins']
+        self.state = build_dict['state']
+
+        return self
 
     # new_game()
     # Start a new Blackjack game with a new shoe, dealer hand, and one player hand.
@@ -202,8 +226,9 @@ class Blackjack:
 if __name__ == "__main__":
     game = Blackjack()
     game.new_game(10)
-    print(game.dealer)
-    game.dealer.print_value()
-    print("")
-    print(game.player[0]['hand'])
-    game.player[0]['hand'].print_value()
+    print(game.__dict__)
+    json_str = game.to_json()
+    print(json_str)
+    load_game = Blackjack().from_json(json_str)
+    print(load_game.__dict__)
+    print(load_game.to_json())

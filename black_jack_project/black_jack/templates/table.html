@@ -3,4 +3,14 @@
 <script type="text/javascript" src="{% static 'js/table.js' %}"></script>
 <h2>Hello!</h2>
 <p>This is the table page.</p>
-<p>Insert stuff here.</p>
+{% csrf_token %}
+<p>
+    <button id="reset">Reset</button>
+    <button id="new_game">New Game</button>
+    <button id="hit">Hit</button>
+    <button id="stand">Stand</button>
+    <button id="double_down">Double Down</button>
+    <button id="split">Split</button>
+    <button id="insurance_yes">Yes</button>
+    <button id="insurance_no">No</button>
+</p>
