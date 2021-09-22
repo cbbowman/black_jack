@@ -2,7 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .forms import RegisterForm, LoginForm
+from django.template import loader
+from django.http import HttpResponse
+
 # Create your views here.
+
+def index(request):
+    context = {}
+    template = loader.get_template('index_modified.html')
+    return HttpResponse(template.render(context, request))
 
 def register(request):
     if request.method == 'POST':
@@ -21,6 +29,16 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('/')
-  
-def index(request):
-	return render(request, 'index.html')
+
+def html(request):
+    pass 
+ 
+'''
+    context = {}
+    # The template to be loaded as per gentelella.
+    # All resource paths for gentelella end in .html.
+
+    # Pick out the html file name from the url. And load that template.
+    load_template = request.path.split('/')[-1]
+    template = loader.get_template('app/' + load_template)
+    return HttpResponse(template.render(context, request)) '''

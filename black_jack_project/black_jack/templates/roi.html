@@ -1,0 +1,47 @@
+{% extends "base_site.html" %}
+
+{% block title %} ROI {% endblock title %}
+
+{% block stylesheets %}
+    {{ block.super }}
+{% endblock stylesheets %}
+
+{% block body %}
+    {% block content %}
+        <div class="container-fluid align-middle">
+            <div class="row row-cols-3 align-middle">
+                <div class="col-xl-4">
+                    <div class="row-lg-12">
+                        <h2 class="h2">Winnings</h2>
+                    </div>
+                    <div class="row-md-12">
+                        <p>$50,000</p>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="row-lg-12">
+                        <h2 class="h2">Invested</h2>
+                    </div>
+                    <div class="row-md-12">
+                        <p>$200,000</p>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="row-lg-12">
+                        <h2 class="h2">Return %</h2>
+                    </div>
+                    <div class="row-md-12">
+                        <p>25%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row-xl-12">
+                <span class="container" id="bar"></span>
+            </div>
+        </div>
+    {% endblock content %}
+{% endblock body %}
+
+{% block javascripts %}
+    {{ block.super }}
+{% endblock javascripts %}
