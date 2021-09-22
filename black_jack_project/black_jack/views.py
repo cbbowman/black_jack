@@ -4,15 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.conf import settings
 from .forms import RegisterForm, LoginForm
 from .bj_table import Blackjack
-from django.template import loader
-from django.http import HttpResponse
-
 # Create your views here.
-
-def index(request):
-    context = {}
-    template = loader.get_template('index_modified.html')
-    return HttpResponse(template.render(context, request))
 
 def register(request):
     if request.method == 'POST':
@@ -56,7 +48,8 @@ if settings.DEBUG:
         return render(request, "test_page.html")
 
     def test_display(request):
-        print("in test_display")
+        if settings.DEBUG:
+            print("in display")
         context = {}
         if 'game_data' in request.session:
             game_data = request.session['game_data']
@@ -74,6 +67,10 @@ if settings.DEBUG:
             if game_table.state == "end":
                 context['wins'] = game_table.wins
             context['actions_available'] = game_data['actions_available']
+            if settings.DEBUG:
+                print(game_table.dealer)
+                for spot in game_table.player:
+                    print(spot['hand'], spot['status'])
         else:
             context['no_game_data'] = True
         return render(request, "table.html", context)
@@ -91,6 +88,8 @@ if settings.DEBUG:
     # Path: '/test/new_game/'
     # Start new blackjack game.
     def test_new_game(request):
+        if settings.DEBUG:
+            print("in new game")
         if request.method == "POST":
             if 'main_bet' in request.POST:
                 main_bet = request.POST['main_bet']
@@ -123,6 +122,8 @@ if settings.DEBUG:
     # Path: /test/hit/
     # Add card to active hand.
     def test_hit(request):
+        if settings.DEBUG:
+            print("in hit")
         if request.method == "POST":
             game_data = request.session['game_data']
             game_table = Blackjack().from_json(game_data['table'])
@@ -135,10 +136,11 @@ if settings.DEBUG:
                 game_data['actions_available'] = player_turn_actions(game_table, game_data['active_hand'])
             else: # active hand stand or bust
                 # Traverse to the next active hand.
-                while (game_table.player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_table.player)):
+                while game_table.player[game_data['active_hand']]['status'] != "active":
                     game_data['active_hand'] += 1
+                    if game_data['active_hand'] == len(game_table.player):
+                        break
                 # Determine next available actions.
-                game_data['active_hand'] += 1
                 if game_data['active_hand'] == len(game_table.player): # Played through all player hands.
                     game_data['actions_available'] = []
                     game_table.status = "dealer_turn"
@@ -155,6 +157,8 @@ if settings.DEBUG:
     # Path: /test/stand/
     # End turn on active hand.
     def test_stand(request):
+        if settings.DEBUG:
+            print("in stand")
         if request.method == "POST":
             game_data = request.session['game_data']
             game_table = Blackjack().from_json(game_data['table'])
@@ -162,8 +166,11 @@ if settings.DEBUG:
             game_table.stand(game_data['active_hand'])
 
             # Traverse to the next active hand.
-            while (game_table.player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_table.player)):
+            while (game_table.player[game_data['active_hand']]['status'] != "active"):
                 game_data['active_hand'] += 1
+                if game_data['active_hand'] == len(game_table.player):
+                    # Played through all player hands.
+                    break
             # Determine next available actions.
             if game_data['active_hand'] == len(game_table.player): # Played through all player hands.
                 game_data['actions_available'] = []
@@ -181,6 +188,8 @@ if settings.DEBUG:
     # Path: /test/double_down/
     # Double the bet on the active hand, draw one card, and stand.
     def test_double_down(request):
+        if settings.DEBUG:
+            print("in double_down")
         if request.method == "POST":
             game_data = request.session['game_data']
             game_table = Blackjack().from_json(game_data['table'])
@@ -206,13 +215,15 @@ if settings.DEBUG:
     # Path: /test/split/
     # Split a pair.
     def test_split(request):
+        if settings.DEBUG:
+            print("in split")
         if request.method == "POST":
             game_data = request.session['game_data']
             game_table = Blackjack().from_json(game_data['table'])
 
             # Deduct from player credit meter here.
 
-            game_table.player.split(game_data['active_hand'])
+            game_table.split(game_data['active_hand'])
 
             # Stand on all split aces. A split ace that gets another ace can be split again.
             for i in range(game_data['active_hand'], len(game_table.player)):
@@ -220,8 +231,10 @@ if settings.DEBUG:
                     game_table.player[i]['status'] = "stand"
 
             # Traverse to the next active hand.
-            while (game_table.player[game_data['active_hand']].status != "active") and (game_data['active_hand'] < len(game_table.player)):
+            while game_table.player[game_data['active_hand']]['status'] != "active":
                 game_data['active_hand'] += 1
+                if game_data['active_hand'] < len(game_table.player):
+                    break
             # Determine next available actions.
             if game_data['active_hand'] == len(game_table.player): # Played through all player hands.
                 game_data['actions_available'] = []
@@ -239,6 +252,8 @@ if settings.DEBUG:
     # Path: /test/insurance/
     # When taking insurance.
     def test_take_insurance(request):
+        if settings.DEBUG:
+            print("in take_insurance")
         if request.method == "POST":
             game_data = request.session['game_data']
             game_table = Blackjack().from_json(game_data['table'])
@@ -255,20 +270,39 @@ if settings.DEBUG:
 
         return redirect('/test/display/')
 
-    # test_setup_game
-    # Path: /test/setup_game/
-    # Set up for the first turn.
-    def test_setup_game(request):
-        print("In test_setup_game begin")
+    # no_insurance
+    # Path: /test/no_insurance/
+    # When offered and refused insurance.
+    def test_no_insurance(request):
+        if settings.DEBUG:
+            print("in no_insurance")
         if request.method == "POST":
             game_data = request.session['game_data']
             game_table = Blackjack().from_json(game_data['table'])
 
             game_table.blackjack_check()
 
+            # Save to session data.
+            game_data['table'] = game_table.to_json()
+            request.session['game_data'] = game_data
+
+            return test_setup_game(request)
+
+        return redirect('/test/display/')
+
+    # test_setup_game
+    # Path: /test/setup_game/
+    # Set up for the first turn.
+    def test_setup_game(request):
+        if settings.DEBUG:
+            print("In test_setup_game")
+        if request.method == "POST":
+            game_data = request.session['game_data']
+            game_table = Blackjack().from_json(game_data['table'])
+
             if game_table.state == 'player_turn':
                 game_data['active_hand'] = 0
-                game_data['actions_available'] = player_turn_actions(game_data['table'], 0)
+                game_data['actions_available'] = player_turn_actions(game_table, 0)
 
             if game_table.state == 'dealer_turn': # Dealer blackjack, game effectively over.
                 game_table.dealer_reveal()
@@ -281,18 +315,4 @@ if settings.DEBUG:
             game_data['table'] = game_table.to_json()
             request.session['game_data'] = game_data
 
-        print("In test_setup_game end")
         return redirect('/test/display/')
-      
-def html(request):
-    pass 
- 
-'''
-    context = {}
-    # The template to be loaded as per gentelella.
-    # All resource paths for gentelella end in .html.
-
-    # Pick out the html file name from the url. And load that template.
-    load_template = request.path.split('/')[-1]
-    template = loader.get_template('app/' + load_template)
-    return HttpResponse(template.render(context, request)) '''

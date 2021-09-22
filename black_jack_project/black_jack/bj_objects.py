@@ -133,7 +133,7 @@ class Hand:
         self.cards = []
         for c in hand_dict['cards']:
             self.cards.append(Card(c['rank'], c['suit']))
-        self.facedown_card = hand_dict['facedown_card']
+        self.facedown_card = None if hand_dict['facedown_card'] == None else Card(hand_dict['facedown_card']['rank'], hand_dict['facedown_card']['suit'])
         self.dealer = hand_dict['dealer']
 
         return self

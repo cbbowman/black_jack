@@ -1,13 +1,10 @@
-from django.urls import path, re_path
+from django.urls import path
 from django.conf import settings
 from . import views
-
 urlpatterns = [
     path('register',views.register),
     path('login',views.login_user),
     path('logout',views.logout_user),
-    re_path(r'^.*\.html', views.html, name='gentella'),
-	  path('', views.index, name='index'),
 ]
 
 if settings.DEBUG:
@@ -20,6 +17,6 @@ if settings.DEBUG:
         path('test/stand/', views.test_stand),
         path('test/double_down/', views.test_double_down),
         path('test/split/', views.test_split),
-        path('test/insurance/', views.test_take_insurance),
+        path('test/take_insurance/', views.test_take_insurance),
         path('test/setup_game/', views.test_setup_game),
     ])

@@ -107,6 +107,7 @@ class Blackjack:
     # blackjack_check()
     # Check for dealer and player blackjack.
     def blackjack_check(self):
+        print(self.dealer.cards[0], self.dealer.facedown_card)
         dealer_blackjack = (self.dealer.cards[0].soft_value + self.dealer.facedown_card.soft_value == 21)
         player_blackjack = (self.player[0]['hand'].cards[0].soft_value + self.player[0]['hand'].cards[1].soft_value == 21)
 
@@ -145,7 +146,7 @@ class Blackjack:
     # Current hand is split into two hands, extra card drawn for each hand.
     # Only available when card ranks are identical, and player has less than 4 hands.
     def split(self, hand_num):
-        if (len(self.player[hand_num]['hand']) == 2) and (len(self.player) < 4):
+        if (len(self.player[hand_num]['hand'].cards) == 2) and (len(self.player) < 4):
             card_to_split = self.player[hand_num]['hand'].cards.pop()
             # Start new hand.
             self.player.append({
@@ -153,12 +154,12 @@ class Blackjack:
                 'hand'   : Hand(),
                 'status' : 'active',
             })
-            self.player[len(self.player-1)]['hand'].cards.append(card_to_split)
+            self.player[len(self.player)-1]['hand'].cards.append(card_to_split)
             # Draw new cards for each. Auto-stand if 21.
             self.player[hand_num]['hand'].draw_card(self.shoe)
             if self.player[hand_num]['hand'].final_value == 21:
                 self.player[hand_num]['status'] = "stand"
-            self.player[len(self.player-1)]['hand'].draw_card(self.shoe)
+            self.player[len(self.player)-1]['hand'].draw_card(self.shoe)
             if self.player[len(self.player)-1]['hand'].final_value == 21:
                 self.player[len(self.player)-1]['status'] = "stand"
 
@@ -168,7 +169,7 @@ class Blackjack:
     # Double the bet, draw one extra card, then stand.
     # Only available when hand has 2 cards with total value of 9, 10, or 11.
     def double_down(self, hand_num):
-        if len(self.player[hand_num]['hand']) == 2:
+        if len(self.player[hand_num]['hand'].cards) == 2:
             # Double the bet.
             self.player[hand_num]['bet'] *= 2
             # Draw a card.
