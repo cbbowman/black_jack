@@ -4,7 +4,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.conf import settings
 from .forms import RegisterForm, LoginForm
 from .bj_table import Blackjack
+from django.template import loader
+from django.http import HttpResponse
+
 # Create your views here.
+
+def index(request):
+    context = {}
+    template = loader.get_template('index_modified.html')
+    return HttpResponse(template.render(context, request))
 
 def register(request):
     if request.method == 'POST':
@@ -275,3 +283,16 @@ if settings.DEBUG:
 
         print("In test_setup_game end")
         return redirect('/test/display/')
+      
+def html(request):
+    pass 
+ 
+'''
+    context = {}
+    # The template to be loaded as per gentelella.
+    # All resource paths for gentelella end in .html.
+
+    # Pick out the html file name from the url. And load that template.
+    load_template = request.path.split('/')[-1]
+    template = loader.get_template('app/' + load_template)
+    return HttpResponse(template.render(context, request)) '''
