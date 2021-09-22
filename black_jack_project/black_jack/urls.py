@@ -5,6 +5,7 @@ urlpatterns = [
     path('register',views.register),
     path('login',views.login_user),
     path('logout',views.logout_user),
+    path('dashboard',views.dashboard),
     re_path(r'^.*\.html', views.html, name='gentella'),
-	  path('', views.index, name='index'),
+	path('', views.index, name='index'),
 ]
