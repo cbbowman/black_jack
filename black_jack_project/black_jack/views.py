@@ -36,7 +36,7 @@ def logout_user(request):
     return redirect('/')
 
 def dashboard(request):
-    if 'user_id' not in request.session:
+    if 'user_id' in request.session:
         return render(request,'base_site.html')
     return redirect('/')
 
