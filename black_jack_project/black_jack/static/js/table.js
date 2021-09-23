@@ -39,7 +39,7 @@ $(document).ready(function(){
         });
     });
     $("#insurance_no").click(function(){
-        $.post("/test/setup_game/", {csrfmiddlewaretoken : csrftoken}, function(result){
+        $.post("/test/no_insurance/", {csrfmiddlewaretoken : csrftoken}, function(result){
             $("#game_table").html(result);
         });
     });
