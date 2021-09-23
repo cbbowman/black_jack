@@ -58,12 +58,12 @@
 							<div class='col col-rows-2'>
 								<div class="row-xl-3" id="banner">
 									{% block banner %}
-										<!-- Content -->
+										{% include "table.html" %}
 									{% endblock banner %}
 								</div>
 								<div class="row-xl-7" id="game">
 									{% block content %}
-										<!-- Content -->
+										{% include "game.html" %}
 									{% endblock content %}
 								</div>
 							</div>
