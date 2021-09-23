@@ -6,23 +6,41 @@ from .forms import RegisterForm, LoginForm
 from .bj_table import Blackjack
 # Create your views here.
 
+def index(request):
+    context = {
+        'RegForm': RegisterForm(),
+        'LogForm': LoginForm(),
+    }
+    template = loader.get_template('index_modified.html')
+    return HttpResponse(template.render(context, request))
+
 def register(request):
     if request.method == 'POST':
-        User.objects.create_user(username = request.POST['username'],first_name=request.POST['first_name'], last_name=request.POST['last_name'],email=request.POST['email'], password=request.POST['password'])
+        new_user =User.objects.create_user(username = request.POST['username'],first_name=request.POST['first_name'], last_name=request.POST['last_name'],email=request.POST['email'], password=request.POST['password'])
         print(request)
-        return redirect('/')
+        logged_user =authenticate(username=request.POST['username'],password=request.POST['password'])
+        login(request,logged_user)
+        return redirect('/dashboard')
     return redirect('/')
 
 def login_user(request):
     if request.method == 'POST':
         logged_user =authenticate(username=request.POST['username'],password=request.POST['password'])
-        login(request,logged_user)
+        if logged_user is not None:
+            login(request,logged_user)
+            return redirect('/dashboard')
         return redirect('/')
     return redirect('/')
 
 def logout_user(request):
     logout(request)
     return redirect('/')
+
+def dashboard(request):
+    if request.user.is_authenticated:
+        return render(request,'base_site.html')
+    return redirect('/')
+
 
 # Blackjack game must be rebuilt from session data on every view.
 # game_data in request.session contains the following:
