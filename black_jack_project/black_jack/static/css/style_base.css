@@ -130,7 +130,7 @@ tbody {
     text-align: center;
     align-self: center;
     vertical-align: middle;
-    /* background-color: gray; */
+    background-color: gray;
     outline: 7.5px solid black;
     border: 10px solid  rgb(1, 53, 10);
     justify-content: space-evenly;
