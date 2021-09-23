@@ -57,10 +57,11 @@ h1 {
 form {
     width: 100%;
     padding: 1em;
-    display: block;
+    display: flex;
+    flex-flow:column;
     margin: 0 auto;
     font-size: 1.25em;
-    text-align: center;
+    /* text-align: center; */
     border: 5px solid black;
     justify-content: space-evenly;
 }
@@ -91,12 +92,12 @@ tbody {
     max-height: 100%;
 }
 #boards {
-    padding: 25px;
+    padding: 20px;
     margin: 20px 5px;
     min-height: 90vh;
     font-weight: 700;
     text-align: center;
-    border: 7.5px solid crimson;
+    border: 6.6px solid crimson;
     outline: 7.5px solid black;
     justify-content: space-around;
     background-color: rgba(27, 23, 250, 0.486);
@@ -109,7 +110,7 @@ tbody {
     font-weight: 700;
     flex-flow: column;
     text-align: center;
-    border: 7.5px solid crimson;
+    border: 6.6px solid crimson;
     outline: 7.5px solid black;
     justify-content: space-around;
     background-color: rgba(27, 23, 250, 0.486);

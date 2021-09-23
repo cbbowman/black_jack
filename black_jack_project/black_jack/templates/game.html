@@ -12,6 +12,15 @@
 
 {% block body %}
     {% block content %}
+        <!-- content -->
+    {% endblock content %}
+{% endblock body %}
+
+{% block javascripts %}
+    {{ block.super }}
+{% endblock javascripts %}
+
+
 {% comment %} {% block navbar %}
     <nav class="navbar fixed-top bg-danger justify-content-between" id="nav2" role="group">
         <a href="" class="navbar-brand"><h1 class="h1">Hey, {{ request.session.first_name }}!</h1></a> 
@@ -27,10 +36,3 @@
         </div>
     </nav>
 {% endblock navbar %} {% endcomment %}
-
-    {% endblock content %}
-{% endblock body %}
-
-{% block javascripts %}
-    {{ block.super }}
-{% endblock javascripts %}
