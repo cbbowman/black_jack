@@ -19,16 +19,20 @@ def index(request):
 
 def register(request):
     if request.method == 'POST':
-        User.objects.create_user(username = request.POST['username'],first_name=request.POST['first_name'], last_name=request.POST['last_name'],email=request.POST['email'], password=request.POST['password'])
+        new_user =User.objects.create_user(username = request.POST['username'],first_name=request.POST['first_name'], last_name=request.POST['last_name'],email=request.POST['email'], password=request.POST['password'])
         print(request)
+        logged_user =authenticate(username=request.POST['username'],password=request.POST['password'])
+        login(request,logged_user)
         return redirect('/dashboard')
     return redirect('/')
 
 def login_user(request):
     if request.method == 'POST':
         logged_user =authenticate(username=request.POST['username'],password=request.POST['password'])
-        login(request,logged_user)
-        return redirect('/dashboard')
+        if logged_user is not None:
+            login(request,logged_user)
+            return redirect('/dashboard')
+        return redirect('/')
     return redirect('/')
 
 def logout_user(request):
@@ -36,9 +40,10 @@ def logout_user(request):
     return redirect('/')
 
 def dashboard(request):
-    if 'user_id' in request.session:
+    if request.user.is_authenticated:
         return render(request,'base_site.html')
     return redirect('/')
+
 
 # Blackjack game must be rebuilt from session data on every view.
 # game_data in request.session contains the following:
