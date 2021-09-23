@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.conf import settings
 from .forms import RegisterForm, LoginForm
 from .bj_table import Blackjack
+from django.template import loader
+from django.http import HttpResponse
 # Create your views here.
 
 def index(request):
