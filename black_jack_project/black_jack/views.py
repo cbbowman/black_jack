@@ -36,7 +36,7 @@ def logout_user(request):
     return redirect('/')
 
 def dashboard(request):
-    if 'user_id' in request.session:
+    if request.user.is_authenticated:
         return render(request,'base_site.html')
     return redirect('/')
 
@@ -276,7 +276,8 @@ if settings.DEBUG:
 
             if game_table.state == 'player_turn':
                 game_data['active_hand'] = 0
-                game_data['actions_available'] = player_turn_actions(game_data['table'], 0)
+                # game_data['actions_available'] = player_turn_actions(game_data['table'], 0)
+                game_data['actions_available'] = player_turn_actions(game_table, 0)
 
             if game_table.state == 'dealer_turn': # Dealer blackjack, game effectively over.
                 game_table.dealer_reveal()

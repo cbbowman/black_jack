@@ -107,7 +107,8 @@ class Blackjack:
     # blackjack_check()
     # Check for dealer and player blackjack.
     def blackjack_check(self):
-        dealer_blackjack = (self.dealer.cards[0].soft_value + self.dealer.facedown_card.soft_value == 21)
+        # dealer_blackjack = (self.dealer.cards[0].soft_value + self.dealer.facedown_card.soft_value == 21)
+        dealer_blackjack = (self.dealer.cards[0].soft_value + 1 == 21)
         player_blackjack = (self.player[0]['hand'].cards[0].soft_value + self.player[0]['hand'].cards[1].soft_value == 21)
 
         if dealer_blackjack:
