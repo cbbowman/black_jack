@@ -54,6 +54,10 @@ if settings.DEBUG:
         if 'game_data' in request.session:
             game_data = request.session['game_data']
             game_table = Blackjack().from_json(game_data['table'])
+            if game_table.state == "dealer_turn":
+                game_table.dealer_reveal()
+                while game_table.state != "end":
+                    game_table.dealer_draw()
             context['dealer_hand'] = game_table.dealer
             context['active_hand'] = game_data['active_hand']
             context['player_hands'] = []
